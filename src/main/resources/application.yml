@@ -1,0 +1,11 @@
+spring:
+  security:
+    user:
+      name: wjp
+      password: qwer
+  data:
+    mongodb:
+      database: hello
+    rest:
+      default-media-type: application/json
+debug: true
