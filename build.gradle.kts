@@ -3,9 +3,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.5.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.6.0"
     kotlin("jvm") version "1.5.31"
-    kotlin("plugin.spring") version "1.5.31"
+//    kotlin("plugin.spring") version "1.5.31"
     kotlin("plugin.jpa") version "1.5.31"
+    id ("org.jetbrains.kotlin.plugin.allopen") version "1.5.31"
+
 }
 
 group = "com.wjp"
@@ -17,10 +20,10 @@ repositories {
 }
 
 dependencies {
-//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -32,7 +35,7 @@ dependencies {
     implementation("org.springframework.session:spring-session-core")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-//    runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 

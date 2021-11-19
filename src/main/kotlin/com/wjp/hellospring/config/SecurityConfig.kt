@@ -1,8 +1,5 @@
 package com.wjp.hellospring.config
 
-import com.wjp.hellospring.domain.model.User
-import com.wjp.hellospring.domain.repo.UserRepo
-import org.bson.types.ObjectId
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,19 +10,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.firewall.DefaultHttpFirewall
+import org.springframework.security.web.firewall.HttpFirewall
+import org.springframework.security.web.firewall.HttpStatusRequestRejectedHandler
+import org.springframework.security.web.firewall.RequestRejectedHandler
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(val userRepo: UserRepo, val jwtTokenFilter: JwtTokenFilter) : WebSecurityConfigurerAdapter() {
+class SecurityConfig() : WebSecurityConfigurerAdapter() {
 
     @Bean
     fun initDb(): CommandLineRunner {
         return CommandLineRunner {
-            userRepo.insert(User(ObjectId(), "wjp", "qwer"))
         }
     }
 
@@ -34,11 +37,13 @@ class SecurityConfig(val userRepo: UserRepo, val jwtTokenFilter: JwtTokenFilter)
         return super.authenticationManagerBean()
     }
 
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(UserDetailsService { username ->
-            userRepo.findByUsername(username) ?: throw UsernameNotFoundException("User: $username not found")
-        });
-    }
+//    override fun configure(auth: AuthenticationManagerBuilder) {
+//        auth.userDetailsService(UserDetailsService { username ->
+//            userRepo.findByUsername(username).orElseThrow {
+//                throw UsernameNotFoundException("User: $username not found")
+//            }
+//        });
+//    }
 
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
@@ -47,7 +52,7 @@ class SecurityConfig(val userRepo: UserRepo, val jwtTokenFilter: JwtTokenFilter)
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         http.authorizeRequests()
-            .antMatchers("/api/public/**").permitAll()
+            .antMatchers("/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/author/**").permitAll()
             .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
             .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()
@@ -56,44 +61,25 @@ class SecurityConfig(val userRepo: UserRepo, val jwtTokenFilter: JwtTokenFilter)
             .anyRequest().authenticated()
 
         // add jwt token filter before spring
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+//        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
 
     }
 
     @Bean
-    fun passwordEncoder()  = BCryptPasswordEncoder()
+    override fun userDetailsService(): UserDetailsService {
+        val user = User.withDefaultPasswordEncoder()
+            .username("wjp")
+            .password("qwer")
+            .roles("ROLE")
+            .build()
+        return InMemoryUserDetailsManager(user)
+    }
 
-//    @Autowired
-//    lateinit var dataSource:DataSource
-//
-//    @Autowired
-//    fun initialize(builder: AuthenticationManagerBuilder, dataSource: DataSource?) {
-//        builder.jdbcAuthentication().dataSource(dataSource).withUser("wjp")
-//            .password("qwer").roles("USER")
-//    }
+    @Bean
+    fun requestRejectedHandler():RequestRejectedHandler = HttpStatusRequestRejectedHandler()
 
-
-//    override fun configure(http: HttpSecurity) {
-////        super.configure(http)
-//        http.authorizeRequests()
-//            .antMatchers("/", "/home").permitAll()
-//            .anyRequest().authenticated()
-//            .and()
-//            .formLogin().loginPage("/login")
-//            .permitAll()
-//            .and()
-//            .logout()
-//            .permitAll()
-//    }
-//
-//    @Bean
-//    override fun userDetailsService(): UserDetailsService {
-//        val user = User.withDefaultPasswordEncoder()
-//            .username("q")
-//            .password("q")
-//            .roles("USER")
-//            .build()
-//        return InMemoryUserDetailsManager(user)
-//    }
-
+    // 默认的StrictHttpFirewall太严格了，暂时不用
+    //
+    @Bean
+    fun defaultHttpFireWall():HttpFirewall = DefaultHttpFirewall()
 }

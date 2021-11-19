@@ -1,9 +1,9 @@
 package com.wjp.hellospring.config
 
-import com.wjp.hellospring.domain.model.User
 import io.jsonwebtoken.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -18,7 +18,7 @@ class JwtTokenUtil(
 
     fun generateAccessToken(user: User): String {
         return Jwts.builder()
-            .setSubject(String.format("%s,%s", user.id, user.username))
+            .setSubject(String.format("%s",  user.username))
             .setIssuer(jwtIssuer)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week

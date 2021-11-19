@@ -4,8 +4,8 @@ spring:
       name: wjp
       password: qwer
   data:
-    mongodb:
-      database: hello
     rest:
-      default-media-type: application/json
+      default-media-type: application/x-www-form-urlencoded
+      
 debug: true
+
