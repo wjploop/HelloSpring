@@ -1,15 +1,12 @@
 package com.wjp.hellospring.domain.dto
 
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+import javax.validation.constraints.*
 
 data class AuthorRequest(
 
     @field:Email
     @field:NotBlank
-    @field:Size(min = 10, max = 30,)
+    @field:Size(min = 10, max = 30)
     val email: String,
 
     @field:NotBlank
@@ -20,5 +17,10 @@ data class AuthorRequest(
     @field:NotBlank()
     @field:Size(min = 6, max = 20)
     val password: String,
+
+    @field:Pattern(regexp = "female|male|unknown")
+    val sex: String = "unknown",
+
+    val age: Int = 0,
 
     )

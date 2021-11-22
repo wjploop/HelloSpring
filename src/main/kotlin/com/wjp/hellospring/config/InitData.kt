@@ -14,7 +14,7 @@ class InitData(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
 
     @Bean
     fun commandLine() = CommandLineRunner {
-        val admin = Author("wjp", "wjploop@163.com")
+        val admin = Author("wjp", "wjploop@163.com","qwer")
 
         authorRepo.save(admin)
 

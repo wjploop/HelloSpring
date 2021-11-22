@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 300MB
+      max-request-size: 350MB
   security:
     user:
       name: wjp
@@ -6,6 +10,4 @@ spring:
   data:
     rest:
       default-media-type: application/x-www-form-urlencoded
-      
 debug: true
-
