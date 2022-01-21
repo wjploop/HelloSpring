@@ -1,5 +1,4 @@
 debug: true
-
 spring:
   servlet:
     multipart:
@@ -12,8 +11,12 @@ spring:
   data:
     rest:
       default-media-type: application/x-www-form-urlencoded
-
+      base-path: /api
+  mvc:
+    log-request-details: true
+    log-resolved-exception: true
+    servlet:
+      path: /
 
 server:
   port: 8080
-

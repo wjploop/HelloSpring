@@ -6,8 +6,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @SpringBootApplication
 @EnableGlobalMethodSecurity(securedEnabled = true)
-class HelloSpringApplication
+class App
 
 fun main(args: Array<String>) {
-    runApplication<HelloSpringApplication>(*args)
+    runApplication<App>(*args)
 }

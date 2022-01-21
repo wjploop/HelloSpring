@@ -18,7 +18,8 @@ class InitData(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
 
         authorRepo.save(admin)
 
-        bookRepo.saveAll((1..5).map { Book("Live to death $it", author = admin) }.toList())
+        //todo add authorize
+//        bookRepo.saveAll((1..5).map { Book("Live to death $it", author = admin) }.toList())
     }
 
 }

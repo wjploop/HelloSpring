@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.User
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("api/public")
+@RequestMapping
 class AuthApi(val authenticationManager: AuthenticationManager, val jwtTokenUtil: JwtTokenUtil) {
 
     @PostMapping("login")
@@ -29,7 +29,6 @@ class AuthApi(val authenticationManager: AuthenticationManager, val jwtTokenUtil
             )
 
         val user = authenticate.principal as User
-
         return user
 
     }

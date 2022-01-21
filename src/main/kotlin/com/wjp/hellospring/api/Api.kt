@@ -62,15 +62,7 @@ class Api(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
     fun authors(): MutableList<Author> = authorRepo.findAll()
 
 
-    @RequestMapping("books")
-    fun books(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
-    ) =
-        bookRepo.findAll(PageRequest.of(page, size))
 
-    @RequestMapping("hello")
-    fun hello() = "你好啊"
 
 
 }
