@@ -1,3 +1,5 @@
+debug: true
+
 spring:
   servlet:
     multipart:
@@ -10,4 +12,8 @@ spring:
   data:
     rest:
       default-media-type: application/x-www-form-urlencoded
-debug: true
+
+
+server:
+  port: 8080
+
