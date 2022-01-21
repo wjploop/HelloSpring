@@ -1,5 +1,4 @@
 debug: true
-
 spring:
   servlet:
     multipart:
@@ -9,11 +8,33 @@ spring:
     user:
       name: wjp
       password: qwer
+      roles: USER
   data:
     rest:
       default-media-type: application/x-www-form-urlencoded
-
-
+      base-path: /api
+    jpa:
+      repositories:
+        # 如何对待Repo相关的bean,可以需要时才启动它
+        bootstrap-mode: lazy
+  mvc:
+    log-request-details: true
+    log-resolved-exception: true
+    servlet:
+      path: /
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
 server:
   port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: error
+        web: debug
 

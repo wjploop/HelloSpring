@@ -6,15 +6,26 @@ import com.wjp.hellospring.domain.entity.ResultCode
 import com.wjp.hellospring.domain.entity.ResultVO
 import com.wjp.hellospring.domain.model.Author
 import com.wjp.hellospring.domain.repo.AuthorRepo
-import com.wjp.hellospring.domain.repo.BookRepo
-import org.springframework.data.domain.PageRequest
-import org.springframework.web.bind.annotation.*
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import javax.annotation.Resource
 import javax.validation.Valid
 
-//@RestController
-class Api(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
+@RestController
+@RequestMapping("author")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
+class AuthorController {
 
-    @PostMapping("author/create")
+    @Resource
+    lateinit var authorRepo: AuthorRepo
+
+    @RequestMapping("list")
+    fun authors(): MutableList<Author> = authorRepo.findAll()
+
+
+    @PostMapping("create")
     private fun createAuthor(@Valid request: AuthorRequest): ResultVO<Any> {
 
 //        authorRepo.findByEmail(email = request.email)?.let {
@@ -25,7 +36,7 @@ class Api(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
             return ResultVO(ResultCode.invalid_param.code, "该用户名已存在")
         }
 
-        val author =  authorRepo.save(
+        val author = authorRepo.save(
             Author(
                 request.username,
                 request.email,
@@ -37,7 +48,7 @@ class Api(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
         return ResultVO(author)
     }
 
-    @PostMapping("author/update")
+    @PostMapping("update")
     private fun updateAuthor(@Valid request: AuthorUpdateRequest): Author {
         val author = authorRepo.findById(request.id).orElseThrow { Exception("id $request not exit") }
         request.email?.let {
@@ -57,20 +68,4 @@ class Api(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
         }
         return author
     }
-
-    @RequestMapping("authors")
-    fun authors(): MutableList<Author> = authorRepo.findAll()
-
-
-    @RequestMapping("books")
-    fun books(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
-    ) =
-        bookRepo.findAll(PageRequest.of(page, size))
-
-    @RequestMapping("hello")
-    fun hello() = "你好啊"
-
-
 }

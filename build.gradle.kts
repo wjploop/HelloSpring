@@ -13,7 +13,8 @@ plugins {
 
 group = "com.wjp"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
@@ -34,12 +35,12 @@ dependencies {
     implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.springframework.session:spring-session-core")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
+    implementation("junit:junit:4.13.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.springdoc:springdoc-openapi-ui:+")
 
 }
@@ -47,7 +48,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 

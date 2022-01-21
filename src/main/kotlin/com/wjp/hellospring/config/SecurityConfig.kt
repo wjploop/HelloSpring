@@ -15,6 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.firewall.DefaultHttpFirewall
@@ -46,19 +49,11 @@ class SecurityConfig() : WebSecurityConfigurerAdapter() {
 //    }
 
     override fun configure(http: HttpSecurity) {
+
         http.cors().and().csrf().disable()
 
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//        http.httpBasic()
 
-        http.authorizeRequests()
-            .antMatchers("/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/author/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/book/search").permitAll()
-
-            .anyRequest().authenticated()
 
         // add jwt token filter before spring
 //        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
@@ -67,19 +62,18 @@ class SecurityConfig() : WebSecurityConfigurerAdapter() {
 
     @Bean
     override fun userDetailsService(): UserDetailsService {
-        val user = User.withDefaultPasswordEncoder()
-            .username("wjp")
-            .password("qwer")
-            .roles("ROLE")
-            .build()
-        return InMemoryUserDetailsManager(user)
+        var builder = User.builder().passwordEncoder(NoOpPasswordEncoder.getInstance()::encode)
+        var user = builder.username("user").password("123").roles("user").build()
+        // 有两种角色
+        var admin = builder.username("admin").password("123").roles("user", "admin").build()
+        return InMemoryUserDetailsManager(user, admin)
     }
 
     @Bean
-    fun requestRejectedHandler():RequestRejectedHandler = HttpStatusRequestRejectedHandler()
+    fun passwordEncoder(): PasswordEncoder = NoOpPasswordEncoder.getInstance()
+
 
     // 默认的StrictHttpFirewall太严格了，暂时不用
-    //
     @Bean
-    fun defaultHttpFireWall():HttpFirewall = DefaultHttpFirewall()
+    fun defaultHttpFireWall(): HttpFirewall = DefaultHttpFirewall()
 }
