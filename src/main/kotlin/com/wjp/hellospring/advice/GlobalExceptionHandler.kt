@@ -2,6 +2,8 @@ package com.wjp.hellospring.advice
 
 import com.wjp.hellospring.domain.entity.ResultCode
 import com.wjp.hellospring.domain.entity.ResultVO
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.NoHandlerFoundException
 import java.util.*
 import java.util.spi.LocaleServiceProvider
+import javax.annotation.Resource
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 class GlobalExceptionHandler {
+
+    var logger: Logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 //
 //    @ExceptionHandler(Exception::class, NoHandlerFoundException::class)
 //    @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -45,10 +50,13 @@ class GlobalExceptionHandler {
 //    }
 
     @ExceptionHandler(java.lang.Exception::class)
-    fun handleException(e: Exception) = ResultVO<String>(
-        ResultCode.error,
-        e.message
-    )
+    fun handleException(e: Exception):ResultVO<String> {
+        e.printStackTrace()
+        return ResultVO<String>(
+            ResultCode.error,
+            e.message
+        )
+    }
 
     @ExceptionHandler(NoHandlerFoundException::class)
     fun handleNotFound(e: NotImplementedError) = ResultVO<String>(
@@ -61,8 +69,11 @@ class GlobalExceptionHandler {
     lateinit var messageSource: MessageSource
 
     @ExceptionHandler(BindException::class)
-    fun handleValid(e: BindException) =
-        e.bindingResult.allErrors
+    fun handleValid(e: BindException) {
+        e.printStackTrace()
+        println("wolf handler valid ")
+        logger.info("hello")
+        return e.bindingResult.allErrors
             .map {
                 it as FieldError
                 "'${messageSource.getMessage(it.field,null, LocaleContextHolder.getLocale())}${it.defaultMessage}"
@@ -73,5 +84,7 @@ class GlobalExceptionHandler {
                     it
                 )
             }
+    }
+
 
 }

@@ -36,5 +36,16 @@ logging:
       springframework:
         boot:
           autoconfigure: error
-        web: debug
+        web:
+          server:
+            adapter:
+              HttpWebHandlerAdapter: TRACE
+          filter:
+            CommonsRequestLoggingFilter: TRACE
+            GenericFilterBean: trace
+          FilterChainProxy: trace
+      apache:
+        tomcat: info
 
+
+trace: true

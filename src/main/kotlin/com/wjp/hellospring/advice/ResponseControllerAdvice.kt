@@ -41,7 +41,7 @@ class ResponseControllerAdvice : ResponseBodyAdvice<Any> {
         // 应该有更好的方法
         if (returnType.member.name == "error") {
             body as Map<String, Any>
-            return ResultVO<Any>(code = (body["status"]) as Int, msg = "${body["status"]} ${body["path"]}")
+            return ResultVO<Any>(code = (body["status"]) as Int, msg = "${body["status"]} ${body["message"]} ${body["path"]},")
         }
 
         return ResultVO(data = body)
