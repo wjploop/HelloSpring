@@ -23,10 +23,16 @@ spring:
     servlet:
       path: /
   jpa:
-    show-sql: false
-    generate-ddl: true
+    show-sql: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:mysql://150.158.92.41:3306/loop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true&allowPublicKeyRetrieval=true
+    username: loop
+    password: qwer
+    driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 8080
 

@@ -21,6 +21,8 @@ repositories {
 }
 
 dependencies {
+    // 包含日志
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -37,14 +39,16 @@ dependencies {
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
     implementation("junit:junit:4.13.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly("com.h2database:h2")
+//    runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 
     implementation("org.springdoc:springdoc-openapi-ui:+")
 
-//    implementation("org.apache.logging.log4j:log4j-api")
-//    implementation("org.apache.logging.log4j:log4j-core")
+    // mysql driver
+    runtimeOnly("mysql:mysql-connector-java")
+
+
 
 }
 

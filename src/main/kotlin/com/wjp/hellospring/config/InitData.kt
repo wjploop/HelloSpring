@@ -17,16 +17,16 @@ class InitData(val authorRepo: AuthorRepo, val bookRepo: BookRepo) {
 
     @Bean
     fun commandLine() = CommandLineRunner {
-        val admin = Author("wjp", "wjploop@163.com", "qwer")
-
-
-        SecurityContextHolder.getContext().authentication =
-            UsernamePasswordAuthenticationToken("system", "system", AuthorityUtils.createAuthorityList("ROLE_ADMIN"))
-
-        authorRepo.save(admin)
-
-        bookRepo.saveAll((1..5).map { Book("Live to death $it", author = admin) }.toMutableList())
-        SecurityContextHolder.clearContext()
+//        val admin = Author("wjp", "wjploop@163.com", "qwer")
+//
+//
+//        SecurityContextHolder.getContext().authentication =
+//            UsernamePasswordAuthenticationToken("system", "system", AuthorityUtils.createAuthorityList("ROLE_ADMIN"))
+//
+//        authorRepo.save(admin)
+//
+//        bookRepo.saveAll((1..5).map { Book("Live to death $it", author = admin) }.toMutableList())
+//        SecurityContextHolder.clearContext()
     }
 
 }
