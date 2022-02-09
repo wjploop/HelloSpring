@@ -1,6 +1,9 @@
 package com.wjp.hellospring.service
 
 import com.wjp.hellospring.domain.dto.ImageDto
+import com.wjp.hellospring.domain.model.Category
+import com.wjp.hellospring.domain.model.Tag
+import com.wjp.hellospring.domain.repo.CategoryRepo
 import com.wjp.hellospring.domain.repo.ImageRepo
 import com.wjp.hellospring.domain.repo.ImageTagMappingRepo
 import com.wjp.hellospring.domain.repo.TagRepo
@@ -15,14 +18,18 @@ class ImageService {
     @Resource
     lateinit var imageRepo: ImageRepo
 
+
+    @Resource
+    lateinit var categoryRepo: CategoryRepo
+
     @Resource
     lateinit var tagRepo: TagRepo
 
-    @Resource
-    lateinit var imageTagMappingRepo: ImageTagMappingRepo
+    fun images(searchKey: String, categoryId: Long?, tagId: Long?, pageable: Pageable): Page<ImageDto> {
 
-    fun page(categoryId: Long?, tagId: Long?, pageable: Pageable): Page<ImageDto> {
-        return if (categoryId != null && tagId != null) {
+        return if (searchKey.isNotBlank()) {
+            imageRepo.search(searchKey, pageable)
+        } else if (categoryId != null && tagId != null) {
             imageRepo.findByCategoryIdAndTagId(categoryId, tagId, pageable)
         } else if (categoryId != null) {
             imageRepo.findByCategoryId(categoryId, pageable)
@@ -32,4 +39,9 @@ class ImageService {
             return imageRepo.findAllImage(pageable)
         }
     }
+
+    fun categories(): MutableList<Category> = categoryRepo.findAll()
+
+    fun tags(pageable: Pageable): Page<Tag> = tagRepo.findAll(pageable)
+
 }

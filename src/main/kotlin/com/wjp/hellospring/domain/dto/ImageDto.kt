@@ -9,6 +9,4 @@ data class ImageDto(
     val categoryName: String,
     val originUrl: String?,
     val currentUrl: String?,
-) {
-
-}
+)
