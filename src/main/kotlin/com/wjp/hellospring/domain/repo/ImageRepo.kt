@@ -59,6 +59,29 @@ interface ImageRepo : JpaRepository<Image, Long> {
                 " join Tag t on t.id = tm.tagId " +
                 " where t.name like ?1 or c.name like ?1"
     )
-    fun search(key: String, pageable: Pageable): Page<ImageDto>
+    fun searchByCategoryOrTag(searchKey: String, pageable: Pageable): Page<ImageDto>
+
+
+    @Query(
+        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+                " join ImageCategoryMapping cm on cm.imageId = i.id " +
+                " join ImageTagMapping tm on tm.imageId = i.id " +
+                " join Category c on c.id = cm.categoryId " +
+                " join Tag t on t.id = tm.tagId " +
+                " where tm.tagId = ?1 and t.name like ?2"
+    )
+    fun searchByCategory(tagId: Long, searchKey: String, pageable: Pageable): Page<ImageDto>
+
+
+    @Query(
+        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+                " join ImageCategoryMapping cm on cm.imageId = i.id " +
+                " join ImageTagMapping tm on tm.imageId = i.id " +
+                " join Category c on c.id = cm.categoryId " +
+                " join Tag t on t.id = tm.tagId " +
+                " where cm.categoryId = ?1 and t.name like ?2"
+    )
+    fun searchByTag(categoryId: Long, searchKey: String, pageable: Pageable): Page<ImageDto>
+
 
 }
