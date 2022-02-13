@@ -1,8 +1,6 @@
 package com.wjp.hellospring.domain.model.base
 
 import org.springframework.data.jpa.domain.AbstractPersistable
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
