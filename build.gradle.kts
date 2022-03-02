@@ -47,9 +47,6 @@ dependencies {
 
     // mysql driver
     runtimeOnly("mysql:mysql-connector-java")
-
-
-
 }
 
 tasks.withType<KotlinCompile> {
@@ -61,4 +58,17 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.getByName<Jar>("jar") {
+    print("wolf jar")
+    manifest {
+        print("manifest")
+    }
+}
+
+task("copyJar") {
+    val bootJar = tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar")
+
+    print("copy jar")
 }
