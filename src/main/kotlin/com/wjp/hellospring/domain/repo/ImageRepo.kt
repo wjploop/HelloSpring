@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import javax.persistence.SqlResultSetMapping
 import javax.transaction.Transactional
 
 @Transactional
 interface ImageRepo : JpaRepository<Image, Long> {
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByTagAndCategory(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
                 " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +
@@ -22,27 +23,26 @@ interface ImageRepo : JpaRepository<Image, Long> {
     fun findByTagId(tagId: Long, pageable: Pageable): Page<ImageDto>
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByCategory(i.id, c.id, c.name, i.originUrl, i.currentUrl) from Image i  " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
-                " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +
-                " join Tag t on t.id = tm.tagId " +
-                " where cm.categoryId = ?1"
+                " where cm.categoryId = ?1 "
     )
     fun findByCategoryId(categoryId: Long, pageable: Pageable): Page<ImageDto>
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByTagAndCategory(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl)  from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
                 " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +
                 " join Tag t on t.id = tm.tagId " +
-                " where cm.categoryId = ?1 and tm.tagId = ?2"
+                " where cm.categoryId = ?1 and tm.tagId = ?2",
     )
+
     fun findByCategoryIdAndTagId(categoryId: Long, tagId: Long, pageable: Pageable): Page<ImageDto>
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByCategory(i.id, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
                 " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +
@@ -52,7 +52,7 @@ interface ImageRepo : JpaRepository<Image, Long> {
     fun findAllImage(pageable: Pageable): Page<ImageDto>
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByTagAndCategory(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
                 " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +
@@ -63,7 +63,7 @@ interface ImageRepo : JpaRepository<Image, Long> {
 
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByTagAndCategory(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
                 " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +
@@ -74,7 +74,7 @@ interface ImageRepo : JpaRepository<Image, Long> {
 
 
     @Query(
-        "select new com.wjp.hellospring.domain.dto.ImageDto(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
+        "select new com.wjp.hellospring.domain.dto.ImageDtoByCategory(i.id, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
                 " join ImageTagMapping tm on tm.imageId = i.id " +
                 " join Category c on c.id = cm.categoryId " +

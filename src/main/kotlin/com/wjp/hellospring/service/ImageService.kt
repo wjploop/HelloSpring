@@ -2,10 +2,10 @@ package com.wjp.hellospring.service
 
 import com.wjp.hellospring.domain.dto.ImageDto
 import com.wjp.hellospring.domain.model.Category
+import com.wjp.hellospring.domain.model.ImageCategoryMapping
 import com.wjp.hellospring.domain.model.Tag
-import com.wjp.hellospring.domain.repo.CategoryRepo
-import com.wjp.hellospring.domain.repo.ImageRepo
-import com.wjp.hellospring.domain.repo.TagRepo
+import com.wjp.hellospring.domain.repo.*
+import org.springframework.data.domain.Example
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -21,6 +21,12 @@ class ImageService {
 
     @Resource
     lateinit var categoryRepo: CategoryRepo
+
+    @Resource
+    lateinit var imageCategoryMappingRepo: ImageCategoryMappingRepo
+
+    @Resource
+    lateinit var imageTagMappingRepo: ImageTagMappingRepo
 
     @Resource
     lateinit var tagRepo: TagRepo
@@ -48,7 +54,7 @@ class ImageService {
                 imageRepo.findByCategoryIdAndTagId(categoryId, tagId, pageable)
             }
             categoryId != null -> {
-                imageRepo.findByCategoryId(categoryId, pageable)
+                imageRepo.findByCategoryId(categoryId,pageable)
             }
             tagId != null -> {
                 imageRepo.findByTagId(tagId, pageable)
