@@ -52,6 +52,4 @@ logging:
           FilterChainProxy: trace
       apache:
         tomcat: info
-
-
 trace: true
