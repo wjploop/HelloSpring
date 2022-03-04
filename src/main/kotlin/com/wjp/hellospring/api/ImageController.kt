@@ -35,4 +35,7 @@ class ImageController {
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int,
     ) = imageService.tags(PageRequest.of(page, size))
+
+    @RequestMapping("tags_by_image_id")
+    fun tagsByImageId(@RequestParam imageId: Long) = imageService.findTagsByImageId(imageId)
 }

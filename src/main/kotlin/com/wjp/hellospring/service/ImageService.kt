@@ -69,4 +69,6 @@ class ImageService {
 
     fun tags(pageable: Pageable): Page<Tag> = tagRepo.findAll(pageable)
 
+    fun findTagsByImageId(imageId:Long) = tagRepo.findByImageId(imageId)
+
 }

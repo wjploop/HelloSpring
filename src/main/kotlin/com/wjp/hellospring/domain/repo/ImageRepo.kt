@@ -2,6 +2,7 @@ package com.wjp.hellospring.domain.repo
 
 import com.wjp.hellospring.domain.dto.ImageDto
 import com.wjp.hellospring.domain.model.Image
+import com.wjp.hellospring.domain.model.Tag
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -82,6 +83,5 @@ interface ImageRepo : JpaRepository<Image, Long> {
                 " where cm.categoryId = ?1 and t.name like ?2"
     )
     fun searchByTag(categoryId: Long, searchKey: String, pageable: Pageable): Page<ImageDto>
-
 
 }
