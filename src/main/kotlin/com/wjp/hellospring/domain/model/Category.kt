@@ -14,4 +14,10 @@ data class Category(
 
     @JsonProperty("type")
     fun type() = MethodHandles.lookup().lookupClass().simpleName.toString().lowercase()
+    override fun toString(): String {
+
+        return "Category(name='$name', id='$id')"
+    }
+
+
 }

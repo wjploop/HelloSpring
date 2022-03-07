@@ -14,4 +14,6 @@ interface TagRepo : JpaRepository<Tag, Long> {
                 " where itm.image_id = ?", nativeQuery = true
     )
     fun findByImageId(imageId: Long): List<Tag>
+
+    fun findByName(name:String):Tag?
 }

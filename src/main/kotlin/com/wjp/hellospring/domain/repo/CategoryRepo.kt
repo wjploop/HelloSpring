@@ -6,4 +6,7 @@ import javax.transaction.Transactional
 
 @Transactional
 interface CategoryRepo:JpaRepository<Category,Long> {
+
+    fun findByName(name: String):Category?
+
 }

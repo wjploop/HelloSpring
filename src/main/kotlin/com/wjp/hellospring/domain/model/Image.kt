@@ -14,4 +14,9 @@ class Image(
 
     @JsonProperty("type")
     fun type() = MethodHandles.lookup().lookupClass().simpleName.toString().lowercase()
+    override fun toString(): String {
+        return "Image(currentUrl=$currentUrl, originUrl=$originUrl, id=$id)"
+    }
+
+
 }

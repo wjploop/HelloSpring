@@ -13,6 +13,8 @@ import javax.transaction.Transactional
 @Transactional
 interface ImageRepo : JpaRepository<Image, Long> {
 
+    fun findByOriginUrl(originUrl:String):Image?
+
     @Query(
         "select new com.wjp.hellospring.domain.dto.ImageDtoByTagAndCategory(i.id, t.id, t.name, c.id, c.name, i.originUrl, i.currentUrl) from Image i " +
                 " join ImageCategoryMapping cm on cm.imageId = i.id " +
@@ -83,5 +85,6 @@ interface ImageRepo : JpaRepository<Image, Long> {
                 " where cm.categoryId = ?1 and t.name like ?2"
     )
     fun searchByTag(categoryId: Long, searchKey: String, pageable: Pageable): Page<ImageDto>
+
 
 }

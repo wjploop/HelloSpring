@@ -38,4 +38,15 @@ class ImageController {
 
     @RequestMapping("tags_by_image_id")
     fun tagsByImageId(@RequestParam imageId: Long) = imageService.findTagsByImageId(imageId)
+
+    @RequestMapping("add")
+    fun add(
+        category: String, tags: String, url: String
+    ) = imageService.save(category, tags, url)
+
+    @RequestMapping("remove")
+    fun remove(
+        category: String, tags: String, url: String
+    ) = imageService.delete(category, tags, url)
+
 }

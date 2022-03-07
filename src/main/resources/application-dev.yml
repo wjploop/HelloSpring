@@ -1,3 +1,4 @@
+
 debug: true
 spring:
   servlet:
@@ -18,12 +19,12 @@ spring:
         # 如何对待Repo相关的bean,可以需要时才启动它
         bootstrap-mode: lazy
   mvc:
-    log-request-details: false
-    log-resolved-exception: false
+    log-request-details: true
+    log-resolved-exception: true
     servlet:
       path: /
   jpa:
-    show-sql: false
+    show-sql: true
     generate-ddl: false
     hibernate:
       ddl-auto: none
@@ -35,6 +36,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       max-lifetime: 60000
+  main:
+    banner-mode: console
 server:
   port: 80
 
@@ -52,6 +55,13 @@ logging:
             CommonsRequestLoggingFilter: TRACE
             GenericFilterBean: trace
           FilterChainProxy: trace
+
       apache:
         tomcat: info
-trace: true
+    com:
+      wjp:
+        hellospring:
+          log:
+            Logger: info
+trace: false
+

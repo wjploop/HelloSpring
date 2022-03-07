@@ -1,14 +1,13 @@
 package com.wjp.hellospring.service
 
 import com.wjp.hellospring.domain.dto.ImageDto
-import com.wjp.hellospring.domain.model.Category
-import com.wjp.hellospring.domain.model.ImageCategoryMapping
-import com.wjp.hellospring.domain.model.Tag
+import com.wjp.hellospring.domain.model.*
 import com.wjp.hellospring.domain.repo.*
-import org.springframework.data.domain.Example
+import com.wjp.hellospring.log.Logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
 import javax.annotation.Resource
 
@@ -54,7 +53,7 @@ class ImageService {
                 imageRepo.findByCategoryIdAndTagId(categoryId, tagId, pageable)
             }
             categoryId != null -> {
-                imageRepo.findByCategoryId(categoryId,pageable)
+                imageRepo.findByCategoryId(categoryId, pageable)
             }
             tagId != null -> {
                 imageRepo.findByTagId(tagId, pageable)
@@ -69,6 +68,56 @@ class ImageService {
 
     fun tags(pageable: Pageable): Page<Tag> = tagRepo.findAll(pageable)
 
-    fun findTagsByImageId(imageId:Long) = tagRepo.findByImageId(imageId)
+    fun findTagsByImageId(imageId: Long) = tagRepo.findByImageId(imageId)
+
+    @Transactional
+    fun save(categoryName: String, tagsName: String, url: String) {
+
+        if (categoryName.isBlank() || tagsName.isBlank() || url.isBlank()) {
+            Logger.warn(" fail to save $categoryName $tagsName $url, due some param is blank")
+            return
+        }
+
+        val image =
+            imageRepo.findByOriginUrl(url.trim()) ?: imageRepo.saveAndFlush(Image(originUrl = url, currentUrl = null))
+
+        val category = categoryRepo.findByName(categoryName) ?: categoryRepo.saveAndFlush(Category(categoryName))
+
+        imageCategoryMappingRepo.findByImageIdAndCategoryId(image.id, category.id)
+            ?: imageCategoryMappingRepo.save(ImageCategoryMapping(image.id, category.id))
+
+
+        tagsName.split(" ").map { it.trim() }.filter { it.isNotBlank() }.forEach {
+            val tag = tagRepo.findByName(it) ?: tagRepo.saveAndFlush(Tag(it))
+            imageTagMappingRepo.findByImageIdAndTagId(image.id, tag.id)
+                ?: imageTagMappingRepo.save(ImageTagMapping(image.id, tag.id))
+        }
+
+        Logger.info("save $categoryName $tagsName $url")
+    }
+
+    @Transactional
+    fun delete(categoryName: String, tagsName: String, url: String) {
+        val image = imageRepo.findByOriginUrl(url)
+        image?.id?.let {
+            imageCategoryMappingRepo.deleteAllByImageId(it)
+            imageTagMappingRepo.deleteAllByImageId(it)
+            imageRepo.deleteById(it)
+        }
+        val category = categoryRepo.findByName(categoryName)
+        category?.id?.let {
+            if (imageCategoryMappingRepo.countByCategoryId(categoryId = it) == 0L) {
+                categoryRepo.deleteById(category.id)
+            }
+        }
+        tagsName.split(" ").map { it.trim() }.filter { it.isNotBlank() }.forEach { tagsName ->
+            val tag = tagRepo.findByName(tagsName)
+            tag?.id?.let {
+                if (imageTagMappingRepo.countByTagId(tagId = it) == 0L) {
+                    tagRepo.deleteById(tag.id)
+                }
+            }
+        }
+    }
 
 }

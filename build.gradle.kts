@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.6.3"
     kotlin("jvm") version "1.6.10"
-//    kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.6.10"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("plugin.jpa") version "1.6.10"
@@ -69,7 +68,6 @@ tasks.getByName<Jar>("jar") {
 
 buildscript {
     dependencies {
-//        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
         classpath("com.jcraft:jsch:0.1.55")
     }
 }
@@ -78,39 +76,44 @@ configurations {
 
 }
 
-task("publishJar") {
-    val bootJar = tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar")
-    dependsOn.add(bootJar)
 
-    val jsch = com.jcraft.jsch.JSch()
-    jsch.getSession("ubuntu", "wjploop.xyz").apply {
-        setConfig("StrictHostKeyChecking", "no")
-        setPassword("qwerA1234")
-        connect()
-        openChannel("sftp").apply {
+task("publishJar") {
+    doLast {
+
+        val bootJar = tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar")
+
+//    dependsOn.add(bootJar)
+
+        val jsch = com.jcraft.jsch.JSch()
+        jsch.getSession("ubuntu", "wjploop.xyz").apply {
+            setConfig("StrictHostKeyChecking", "no")
+            setPassword("qwerA1234")
             connect()
-            this as com.jcraft.jsch.ChannelSftp
-            put(
-                "${projectDir}/build/libs/HelloSpring-0.0.1-SNAPSHOT.jar", "/home/ubuntu/jar"
-            )
+            openChannel("sftp").apply {
+                connect()
+                this as com.jcraft.jsch.ChannelSftp
+                put(
+                    "${projectDir}/build/libs/HelloSpring-0.0.1-SNAPSHOT.jar", "/home/ubuntu/jar"
+                )
+                disconnect()
+            }
+            println("updated jar")
+
+            openChannel("exec").apply {
+                val channel = this
+                this as com.jcraft.jsch.ChannelExec
+                setCommand("cd ~/jar  && ps -A u | grep 'sudo nohup java -jar' | grep -m1 '' | sudo kill `awk '{print \$2}'` | sudo nohup java -jar HelloSpring-0.0.1-SNAPSHOT.jar &")
+                channel.connect()
+                inputStream.bufferedReader().readLines().let {
+                    println(it)
+                }
+
+                channel.outputStream.writer(Charsets.UTF_8).write("echo hello > hello.txt")
+                channel.disconnect()
+                println("restart java app")
+
+            }
             disconnect()
         }
-        println("updated jar")
-
-        openChannel("exec").apply {
-            val channel  = this
-            this as com.jcraft.jsch.ChannelExec
-            setCommand("cd ~/jar  && ps -A u | grep 'sudo nohup java -jar' | grep -m1 '' | sudo kill `awk '{print \$2}'` | sudo nohup java -jar HelloSpring-0.0.1-SNAPSHOT.jar &")
-            channel.connect()
-            inputStream.bufferedReader().readLines().let {
-                println(it)
-            }
-
-            channel.outputStream.writer(Charsets.UTF_8).write("echo hello > hello.txt")
-            channel.disconnect()
-            println("restart java app")
-
-        }
-        disconnect()
     }
 }
